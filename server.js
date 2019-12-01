@@ -1,8 +1,8 @@
 import express from "express";
-import { router as userRouter } from "./api/users";
-import { router as profileRouter } from "./api/profile";
-import { router as postRouter } from "./api/posts";
-import { router as authRouter } from "./api/auth";
+import { router as userRouter } from "./routes/api/users";
+import { router as profileRouter } from "./routes/api/profile";
+import { router as postRouter } from "./routes/api/posts";
+import { router as authRouter } from "./routes/api/auth";
 import { connectDB } from "./config/db";
 
 const app = express();

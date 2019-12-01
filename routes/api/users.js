@@ -4,7 +4,7 @@ import gravatar from "gravatar";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import config from "config";
-import { User } from "../models/User";
+import { User } from "../../models/User";
 
 export const router = express.Router();
 
