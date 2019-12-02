@@ -8,6 +8,7 @@ export const USER_LOADED = "auth/USER_LOADED";
 export const AUTH_ERROR = "auth/AUTH_ERROR";
 export const LOGIN_SUCCESS = "auth/LOGIN_SUCCESS";
 export const LOGIN_FAIL = "auth/LOGIN_FAIL";
+export const LOGOUT = "auth/LOGOUT";
 
 // Register User
 export const register = ({ name, email, password }) => async dispatch => {
@@ -69,6 +70,13 @@ export const login = ({ email, password }) => async dispatch => {
   }
 };
 
+// Logout & Clear profile
+export const logout=()=>dispatch=>{
+    dispatch({
+        type:LOGOUT
+    })
+}
+
 // Load User
 export const loadUser = () => async dispatch => {
   if (localStorage.token) {
@@ -118,6 +126,7 @@ export default function auth(state = initialState, action) {
     case REGISTER_FAIL:
     case LOGIN_FAIL:
     case AUTH_ERROR:
+    case LOGOUT:
       localStorage.removeItem("token");
       return {
         ...state,
