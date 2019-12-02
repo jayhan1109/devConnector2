@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setAlert } from "./alert";
+import {CLEAR_PROFILE} from './profile';
 import setAuthToken from "../utils/setAuthToken";
 
 export const REGISTER_SUCCESS = "auth/REGISTER_SUCCESS";
@@ -73,6 +74,9 @@ export const login = ({ email, password }) => async dispatch => {
 // Logout & Clear profile
 export const logout=()=>dispatch=>{
     dispatch({
+      type:CLEAR_PROFILE
+    })
+    dispatch({
         type:LOGOUT
     })
 }
@@ -134,7 +138,6 @@ export default function auth(state = initialState, action) {
         isAuthenticated: false,
         loading: false
       };
-
     default:
       return state;
   }

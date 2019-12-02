@@ -3,6 +3,7 @@ import { setAlert } from "./alert";
 
 export const GET_PROFILE = "profile/GET_PROFILE";
 export const PROFILE_ERROR = "profile/PROFILE_ERROR";
+export const CLEAR_PROFILE = "profile/CLEAR_PROFILE";
 
 export const getCurrentProfile = () => async dispatch => {
   try {
@@ -43,6 +44,13 @@ export default function profile(state = initialState, action) {
         error: payload,
         loading: false
       };
+      case CLEAR_PROFILE:
+        return{
+          ...state,
+          profile:null,
+          repos:[],
+          loading:false
+        }
     default:
       return state;
   }
