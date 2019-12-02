@@ -21,6 +21,41 @@ export const getCurrentProfile = () => async dispatch => {
   }
 };
 
+export const createProfile = (
+  formData,
+  history,
+  edit = false
+) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    const res = await axios.post("/api/profile", formData, config);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    });
+    dispatch(setAlert(edit ? "Profile Updated" : "Profile Created",'success'));
+    if (!edit) {
+      history.push("/dashboard");
+    }
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(err => dispatch(setAlert(err.msg, "danger")));
+    }
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
 const initialState = {
   profile: null,
   profiles: [],
@@ -44,13 +79,13 @@ export default function profile(state = initialState, action) {
         error: payload,
         loading: false
       };
-      case CLEAR_PROFILE:
-        return{
-          ...state,
-          profile:null,
-          repos:[],
-          loading:false
-        }
+    case CLEAR_PROFILE:
+      return {
+        ...state,
+        profile: null,
+        repos: [],
+        loading: false
+      };
     default:
       return state;
   }
