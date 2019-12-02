@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addEducation } from "../../reducers/profile";
 
-const AddEducation = ({addEducation,history}) => {
+const AddEducation = ({ addEducation, history }) => {
   const [formData, setFormData] = useState({
     school: "",
     degree: "",
@@ -17,21 +17,30 @@ const AddEducation = ({addEducation,history}) => {
 
   const [toDateDisabled, toggleDisabled] = useState(false);
 
-  const { school, degree, fieldofstudy, from, to, current, description } = formData;
+  const {
+    school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description
+  } = formData;
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit=e=>{
-      e.preventDefault();
-      addEducation(formData,history);
-  }
+  const onSubmit = e => {
+    e.preventDefault();
+    addEducation(formData, history);
+  };
 
   return (
     <Fragment>
       <h1 className="large text-primary">Add Your Education</h1>
       <p className="lead">
-        <i className="fas fa-code-branch"></i> Add any school or bootcamp that you have attended
+        <i className="fas fa-code-branch"></i> Add any school or bootcamp that
+        you have attended
       </p>
       <small>* = required field</small>
       <form className="form" onSubmit={onSubmit}>
@@ -85,7 +94,13 @@ const AddEducation = ({addEducation,history}) => {
         </div>
         <div className="form-group">
           <h4>To Date</h4>
-          <input type="date" name="to" value={to} onChange={onChange} disabled={toDateDisabled?'disabled':''}/>
+          <input
+            type="date"
+            name="to"
+            value={to}
+            onChange={onChange}
+            disabled={toDateDisabled ? "disabled" : ""}
+          />
         </div>
         <div className="form-group">
           <textarea
@@ -112,4 +127,4 @@ AddEducation.propTypes = {
 
 export default connect(null, {
   addEducation
-})(AddEducation);
+})(withRouter(AddEducation));

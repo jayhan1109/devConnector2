@@ -7,10 +7,14 @@ import { logout } from "../../reducers/auth";
 const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
   const authLinks = (
     <ul>
-    <li>
+      <li>
+        <Link to="/profiles">Developers</Link>
+      </li>
+      <li>
         <Link to="/dashboard">
           <i className="fas fa-user"></i>{" "}
-          <span className="hide-sm">Dashboard</span></Link>
+          <span className="hide-sm">Dashboard</span>
+        </Link>
       </li>
       <li>
         <Link to="/#!" onClick={logout}>
@@ -24,7 +28,7 @@ const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
   const guestLinks = (
     <ul>
       <li>
-        <Link to="/#!">Developers</Link>
+        <Link to="/profiles">Developers</Link>
       </li>
       <li>
         <Link to="/register">Register</Link>
