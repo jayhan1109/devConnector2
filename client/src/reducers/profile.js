@@ -2,6 +2,8 @@ import axios from "axios";
 import { setAlert } from "./alert";
 
 export const GET_PROFILE = "profile/GET_PROFILE";
+export const GET_PROFILES = "profile/GET_PROFILES";
+export const GET_REPOS = "profile/GET_REPOS";
 export const PROFILE_ERROR = "profile/PROFILE_ERROR";
 export const CLEAR_PROFILE = "profile/CLEAR_PROFILE";
 export const UPDATE_PROFILE = "profile/UPDATE_PROFILE";
@@ -23,6 +25,60 @@ export const getCurrentProfile = () => async dispatch => {
   }
 };
 
+// Get all profiles
+export const getProfiles = () => async dispatch => {
+  dispatch({ type: CLEAR_PROFILE });
+  try {
+    const res = await axios.get("/api/profile");
+
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
+// Get profile by ID
+export const getProfileById = userId => async dispatch => {
+  try {
+    const res = await axios.get(`/api/profile/${userId}`);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
+// Get github repos
+export const getGithubRepos = githubUsername => async dispatch => {
+  dispatch({ type: CLEAR_PROFILE });
+  try {
+    const res = await axios.get(`/api/profile/github/${githubUsername}`);
+
+    dispatch({
+      type: GET_REPOS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
+// Create or update profile
 export const createProfile = (
   formData,
   history,
@@ -194,6 +250,12 @@ export default function profile(state = initialState, action) {
         profile: payload,
         loading: false
       };
+    case GET_PROFILES:
+      return {
+        ...state,
+        profiles: payload,
+        loading: false
+      };
     case PROFILE_ERROR:
       return {
         ...state,
@@ -205,6 +267,12 @@ export default function profile(state = initialState, action) {
         ...state,
         profile: null,
         repos: [],
+        loading: false
+      };
+    case GET_REPOS:
+      return {
+        ...state,
+        repos: payload,
         loading: false
       };
     default:
