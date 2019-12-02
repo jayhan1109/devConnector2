@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
-import {connect} from 'react-redux';
-import {setAlert} from '../../reducers/alert';
-import PropTypes from 'prop-types'
+import { connect } from "react-redux";
+import { setAlert } from "../../reducers/alert";
+import { register } from "../../reducers/auth";
+import PropTypes from "prop-types";
 
-
-const Register = ({setAlert}) => {
+const Register = ({ setAlert, register }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,9 +21,9 @@ const Register = ({setAlert}) => {
   const onSubmit = async e => {
     e.preventDefault();
     if (password !== password2) {
-      setAlert('Password do not match','danger',2000);
+      setAlert("Password do not match", "danger", 2000);
     } else {
-      console.log('SUCCESS');
+      register({ name, email, password });
     }
   };
 
@@ -51,6 +51,7 @@ const Register = ({setAlert}) => {
             name="email"
             value={email}
             onChange={onChange}
+            required
           />
           <small className="form-text">
             This site uses Gravatar so if you want a profile image, use a
@@ -65,6 +66,7 @@ const Register = ({setAlert}) => {
             minLength="6"
             value={password}
             onChange={onChange}
+            required
           />
         </div>
         <div className="form-group">
@@ -75,6 +77,7 @@ const Register = ({setAlert}) => {
             minLength="6"
             value={password2}
             onChange={onChange}
+            required
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Register" />
@@ -86,13 +89,12 @@ const Register = ({setAlert}) => {
   );
 };
 
-Register.propTypes={
-    setAlert:PropTypes.func.isRequired,
-}
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired
+};
 
-export default connect(
-    null,
-    {
-        setAlert
-    }
-)(Register);
+export default connect(null, {
+  setAlert,
+  register
+})(Register);
