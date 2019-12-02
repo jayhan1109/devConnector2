@@ -9,7 +9,7 @@ import { User } from "../../models/User";
 export const router = express.Router();
 
 // @route   GET     api/auth
-// @desc    Test    route
+// @desc    Get current user
 // @access  Public
 router.get("/", auth, async (req, res) => {
   try {
