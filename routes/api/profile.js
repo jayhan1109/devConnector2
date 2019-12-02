@@ -3,6 +3,8 @@ import { auth } from "../../middleware/auth";
 import { Profile } from "../../models/Profile";
 import { User } from "../../models/User";
 import { check, validationResult } from "express-validator";
+import request from "request";
+import config from "config";
 
 export const router = express.Router();
 
@@ -263,7 +265,7 @@ router.put(
       check("degree", "Degree is required")
         .not()
         .isEmpty(),
-        check("fieldofstudy", "Field Of Study is required")
+      check("fieldofstudy", "Field Of Study is required")
         .not()
         .isEmpty(),
       check("from", "From date is required")
@@ -309,26 +311,57 @@ router.put(
   }
 );
 
-
 // @route   DELETE     api/profile/education/:edu_id
 // @desc    Delete education
 // @access  Private
 router.delete("/education/:edu_id", auth, async (req, res) => {
-    try {
-      const profile = await Profile.findOne({ user: req.user.id });
-  
-      // Get remove index
-      const removeIndex = profile.education
-        .map(item => item.id)
-        .indexOf(req.params.edu_id);
-  
-      profile.education.splice(removeIndex, 1);
-  
-      await profile.save();
-  
-      res.json(profile);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
-    }
-  });
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    // Get remove index
+    const removeIndex = profile.education
+      .map(item => item.id)
+      .indexOf(req.params.edu_id);
+
+    profile.education.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET     api/profile/github/:username
+// @desc    Get user repos from Github
+// @access  Public
+router.get("/github/:username", (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.github.com/users/${
+        req.params.username
+      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
+        "githubClientId"
+      )}&client_secret=${config.get("githubSecret")}`,
+      method: "GET",
+      headers: { "user-agent": "node.js" }
+    };
+
+    request(options, (error, response, body) => {
+      if (error) {
+        console.error(error);
+      }
+
+      if (response.statusCode !== 200) {
+        res.status(404).json({ msg: "No Github profile found" });
+      }
+
+      res.json(JSON.parse(body));
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
