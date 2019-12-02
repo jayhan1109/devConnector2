@@ -1,6 +1,6 @@
 import axios from "axios";
 import { setAlert } from "./alert";
-import {CLEAR_PROFILE} from './profile';
+import { CLEAR_PROFILE, ACCOUNT_DELETED } from "./profile";
 import setAuthToken from "../utils/setAuthToken";
 
 export const REGISTER_SUCCESS = "auth/REGISTER_SUCCESS";
@@ -72,14 +72,14 @@ export const login = ({ email, password }) => async dispatch => {
 };
 
 // Logout & Clear profile
-export const logout=()=>dispatch=>{
-    dispatch({
-      type:CLEAR_PROFILE
-    })
-    dispatch({
-        type:LOGOUT
-    })
-}
+export const logout = () => dispatch => {
+  dispatch({
+    type: CLEAR_PROFILE
+  });
+  dispatch({
+    type: LOGOUT
+  });
+};
 
 // Load User
 export const loadUser = () => async dispatch => {
@@ -131,6 +131,7 @@ export default function auth(state = initialState, action) {
     case LOGIN_FAIL:
     case AUTH_ERROR:
     case LOGOUT:
+    case ACCOUNT_DELETED:
       localStorage.removeItem("token");
       return {
         ...state,
