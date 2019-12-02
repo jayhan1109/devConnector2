@@ -1,8 +1,12 @@
 import axios from "axios";
 import { setAlert } from "./alert";
+import setAuthToken from "../utils/setAuthToken";
 
 export const REGISTER_SUCCESS = "auth/REGISTER_SUCCESS";
 export const REGISTER_FAIL = "auth/REGISTER_FAIL";
+export const USER_LOADED = "auth/USER_LOADED";
+export const AUTH_ERROR = "auth/AUTH_ERROR";
+
 
 // Register User
 export const register = ({ name, email, password }) => async dispatch => {
@@ -33,6 +37,25 @@ export const register = ({ name, email, password }) => async dispatch => {
   }
 };
 
+// Load User
+export const loadUser=()=>async dispatch=>{
+    if(localStorage.token){
+        setAuthToken(localStorage.token);
+    }
+
+    try {
+        const res = await axios.get('/api/auth');
+        dispatch({
+            type:USER_LOADED,
+            payload:res.data
+        })
+    } catch (err) {
+        dispatch({
+            type:AUTH_ERROR
+        })
+    }
+}
+
 const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: null,
@@ -44,6 +67,13 @@ export default function auth(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    case USER_LOADED:
+        return{
+            ...state,
+            isAuthenticated:true,
+            loading:false,
+            user:payload
+        }
     case REGISTER_SUCCESS:
       localStorage.setItem("token", payload.token);
       return {
@@ -53,6 +83,7 @@ export default function auth(state = initialState, action) {
         loading: false
       };
     case REGISTER_FAIL:
+    case AUTH_ERROR:
       localStorage.removeItem("token");
       return {
         ...state,
