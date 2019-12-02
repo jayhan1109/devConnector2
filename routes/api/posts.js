@@ -110,7 +110,6 @@ router.put("/like/:id", auth, async (req, res) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) {
-      console.log("hello");
 
       return res.status(404).json({ msg: "Post not found" });
     }
@@ -161,8 +160,6 @@ router.put("/unlike/:id", auth, async (req, res) => {
 
     res.json(post.likes);
   } catch (err) {
-    console.log(err);
-
     console.error(err.message);
     res.status(500).send("Server Error");
   }

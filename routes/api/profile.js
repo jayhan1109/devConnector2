@@ -84,7 +84,6 @@ router.post(
     if (linkedin) profileFields.social.linkedin = linkedin;
     if (instagram) profileFields.social.instagram = instagram;
 
-    console.log(profileFields);
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
