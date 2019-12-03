@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
+import { deleteComment } from "../../reducers/post";
 
 const CommentItem = ({
   postId,
+  deleteComment,
+  auth,
   comment: { _id, text, name, avatar, user, date }
 }) => {
   return (
@@ -21,16 +24,33 @@ const CommentItem = ({
         <p className="post-date">
           Posted on <Moment format="YYYY/MM/DD">{date}</Moment>
         </p>
+        {!auth.loading && user === auth.user._id && (
+          <button
+            onClick={e => deleteComment(postId, _id)}
+            type="button"
+            className="btn btn-danger"
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
 CommentItem.propTypes = {
+  postId: PropTypes.number.isRequired,
   comment: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  deleteComment: PropTypes.func.isRequired
 };
 
-export default connect(state => ({
-  auth: state.auth
-}),null)(CommentItem);
+export default connect(
+  state => ({
+    auth: state.auth
+  }),
+  {
+    deleteComment
+  }
+)(CommentItem);
+  
