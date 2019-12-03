@@ -5,6 +5,7 @@ export const GET_POSTS = "post/GET_POSTS";
 export const POST_ERROR = "post/POST_ERROR";
 export const UPDATE_LIKES = "post/UPDATE_LIKES";
 export const DELETE_POST = "post/DELETE_POST";
+export const ADD_POST = "post/ADD_POST";
 
 // Get posts
 export const getPosts = () => async dispatch => {
@@ -75,6 +76,29 @@ export const deletePost = id => async dispatch => {
   }
 };
 
+// Add post
+export const addPost = formData=> async dispatch => {
+  const config={
+    headers:{
+      'Content-Type':'application/json'
+    }
+  }
+  try {
+    const res = await axios.post(`/api/posts`,formData,config);
+
+    dispatch({
+      type: ADD_POST,
+      payload: res.data
+    });
+    dispatch(setAlert('Post Created','success'));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
 const initialState = {
   posts: [],
   post: null,
@@ -92,6 +116,12 @@ export default function post(state = initialState, action) {
         posts: payload,
         loading: false
       };
+    case ADD_POST:
+      return{
+        ...state,
+        posts:[payload,...state.posts],
+        loading:false 
+      }
     case DELETE_POST:
       return{
         ...state,
