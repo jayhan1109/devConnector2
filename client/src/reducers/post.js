@@ -4,6 +4,7 @@ import { setAlert } from "./alert";
 export const GET_POSTS = "post/GET_POSTS";
 export const POST_ERROR = "post/POST_ERROR";
 export const UPDATE_LIKES = "post/UPDATE_LIKES";
+export const DELETE_POST = "post/DELETE_POST";
 
 // Get posts
 export const getPosts = () => async dispatch => {
@@ -56,6 +57,24 @@ export const removeLike = id => async dispatch => {
   }
 };
 
+// Delete post
+export const deletePost = id => async dispatch => {
+  try {
+    await axios.delete(`/api/posts/${id}`);
+
+    dispatch({
+      type: DELETE_POST,
+      payload: id
+    });
+    dispatch(setAlert('Post Removed','success'));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
 const initialState = {
   posts: [],
   post: null,
@@ -73,6 +92,12 @@ export default function post(state = initialState, action) {
         posts: payload,
         loading: false
       };
+    case DELETE_POST:
+      return{
+        ...state,
+        posts:state.posts.filter(post=>post._id!==payload),
+        loading:false
+      }
     case POST_ERROR:
       return {
         ...state,
@@ -85,7 +110,6 @@ export default function post(state = initialState, action) {
           posts:state.posts.map(post=>post._id===payload.id?{...post,likes:payload.likes}:post),
           loading:false
         }
-
     default:
       return state;
   }
